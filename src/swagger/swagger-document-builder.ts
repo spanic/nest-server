@@ -3,6 +3,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AUTH_COOKIE_NAME } from 'src/shared/constants';
 import { SWAGGER_TAGS_DEF } from './swagger-tags';
 
+const DEFAULT_PREFIX = process.env.DEFAULT_PREFIX;
 const SWAGGER_URL = process.env.SWAGGER_API_URL;
 
 export class SwaggerDocumentBuilder {
@@ -30,8 +31,12 @@ export class SwaggerDocumentBuilder {
   build() {
     const config = this.buildConfig();
     const document = SwaggerModule.createDocument(this.app, config);
-    SwaggerModule.setup(SWAGGER_URL, this.app, document, {
-      customCss: `
+    SwaggerModule.setup(
+      `${DEFAULT_PREFIX}/${SWAGGER_URL}`,
+      this.app,
+      document,
+      {
+        customCss: `
         .swagger-ui .information-container .info .description .renderedMarkdown {
           text-align: end;
         }
@@ -43,6 +48,7 @@ export class SwaggerDocumentBuilder {
           font-style: italic;
           font-weight: 600;
         }`,
-    });
+      },
+    );
   }
 }
