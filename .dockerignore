@@ -1,7 +1,23 @@
+# Versioning and metadata
+.git
+.gitignore
+
+# Build dependencies
+dist
+node_modules
+coverage
+test
+
+# Environment variables (contains sensitive data)
+.env
+
+# Files not required for production
+.editorconfig
 Dockerfile
 .dockerignore
-node_modules
-dist
-nest-cli.json
 README.md
-test
+LICENSE
+.eslintrc.js
+.prettierrc
+nodemon.json
+nest-cli.json
