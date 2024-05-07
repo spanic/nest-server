@@ -1,0 +1,21 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Login to Cloud.ru Artifact Registry
+      uses: docker/login-action@v3
+      with:
+        registry: unicorn.cr.cloud.ru
+        username: ${{ secrets.CLOUD_RU_ID }}
+        password: ${{ secrets.CLOUD_RU_SECRET }}
