@@ -14,7 +14,7 @@ FROM --platform=linux/amd64 node:lts-alpine
 
 WORKDIR /usr/src/server
 
-COPY --from=build-image /usr/src/server/.env ./
+COPY --from=build-image /usr/src/server/.env* ./
 COPY --from=build-image /usr/src/server/dist ./dist
 COPY --from=build-image /usr/src/server/node_modules ./node_modules
 
