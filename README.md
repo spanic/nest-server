@@ -4,6 +4,10 @@
 
 # Nest.js server
 
+## Swagger UI
+
+**See [fermosa.ddns.net/server/api](http://fermosa.ddns.net/server/api)** ⚡️
+
 ## Description
 
 [Nest.js](https://github.com/nestjs/nest) data server, provides some test data for interviews, hobby projects, etc.
