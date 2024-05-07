@@ -1,26 +1,11 @@
 import { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AUTH_COOKIE_NAME } from 'src/shared/constants';
+import { SWAGGER_TAGS_DEF } from './swagger-tags';
 
-export enum SWAGGER_TAGS {
-  Devices = 'Devices & statuses',
-  Auth = 'Authentication',
-}
-
-export const SWAGGER_TAGS_DEF: {
-  [key in keyof typeof SWAGGER_TAGS]?: { name: string; description?: string };
-} = {
-  Devices: {
-    name: SWAGGER_TAGS.Devices,
-    description: 'Requires authorization ⚠️',
-  },
-  Auth: {
-    name: SWAGGER_TAGS.Auth,
-  },
-};
+const SWAGGER_URL = process.env.SWAGGER_API_URL;
 
 export class SwaggerDocumentBuilder {
-  private static readonly SWAGGER_URL = process.env.SWAGGER_API_URL;
-
   constructor(private readonly app: INestApplication) {}
 
   private buildConfig() {
@@ -29,7 +14,7 @@ export class SwaggerDocumentBuilder {
       .setDescription('### Use Bearer token for authorization ⬇')
       .setVersion('1.0')
       .addBearerAuth()
-      .addCookieAuth('access_token', {
+      .addCookieAuth(AUTH_COOKIE_NAME, {
         type: 'http',
         scheme: 'Bearer',
         in: 'Header',
@@ -45,12 +30,8 @@ export class SwaggerDocumentBuilder {
   build() {
     const config = this.buildConfig();
     const document = SwaggerModule.createDocument(this.app, config);
-    SwaggerModule.setup(
-      SwaggerDocumentBuilder.SWAGGER_URL,
-      this.app,
-      document,
-      {
-        customCss: `
+    SwaggerModule.setup(SWAGGER_URL, this.app, document, {
+      customCss: `
         .swagger-ui .information-container .info .description .renderedMarkdown {
           text-align: end;
         }
@@ -62,7 +43,6 @@ export class SwaggerDocumentBuilder {
           font-style: italic;
           font-weight: 600;
         }`,
-      },
-    );
+    });
   }
 }

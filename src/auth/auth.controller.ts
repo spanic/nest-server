@@ -10,16 +10,18 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
+import { AUTH_COOKIE_NAME } from 'src/shared/constants';
 import { EnvironmentVariables } from 'src/shared/models/environment-variables.model';
 import { LoginDataDto } from 'src/shared/models/login-data.dto';
 import {
   AccessTokenProvideTypes,
   LoginQueryParams,
 } from 'src/shared/models/login-query-params';
+import { SWAGGER_TAGS } from 'src/swagger/swagger-tags';
 import { AuthService } from './auth.service';
 import { Public } from './public.decorator';
 
-@ApiTags('Authentication')
+@ApiTags(SWAGGER_TAGS.Auth)
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -42,7 +44,7 @@ export class AuthController {
         Date.now() + this.configService.get<number>('jwtTokenLifetimeMs'),
       );
 
-      res.cookie('access_token', accessToken, {
+      res.cookie(AUTH_COOKIE_NAME, accessToken, {
         httpOnly: true,
         secure: false,
         expires: expiresIn,

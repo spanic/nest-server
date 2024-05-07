@@ -8,7 +8,8 @@ import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
-import { IS_PUBLIC_ROUTE_KEY as IS_PUBLIC_KEY } from './public.decorator';
+import { AUTH_COOKIE_NAME } from 'src/shared/constants';
+import { IS_PUBLIC_KEY } from './public.decorator';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -36,7 +37,8 @@ export class AuthGuard implements CanActivate {
   }
 
   private checkIsTokenValid(request: Request): boolean {
-    const tokenFromCookie: string | undefined = request.cookies?.access_token;
+    const tokenFromCookie: string | undefined =
+      request.cookies?.[AUTH_COOKIE_NAME];
 
     // eslint-disable-next-line prefer-const
     let [authType, tokenFromAuthHeader] =
