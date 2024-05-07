@@ -1,11 +1,15 @@
 import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import * as cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
+import { EnvironmentVariables } from './shared/models/environment-variables.model';
 import { SwaggerDocumentBuilder } from './swagger/swagger-document-builder';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
+
+  const configService = app.get(ConfigService<EnvironmentVariables>);
 
   app
     .enableShutdownHooks()
@@ -15,11 +19,11 @@ async function bootstrap() {
       }),
     )
     .use(cookieParser())
-    .setGlobalPrefix(process.env.DEFAULT_PREFIX);
+    .setGlobalPrefix(configService.get('defaultPrefix'));
 
   new SwaggerDocumentBuilder(app).build();
 
-  await app.listen(process.env.PORT);
+  await app.listen(configService.get('port'));
 }
 
 bootstrap();

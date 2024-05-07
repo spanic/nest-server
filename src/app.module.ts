@@ -13,8 +13,10 @@ import { StatusesModule } from './statuses/statuses.module';
     DatabaseModule,
     AuthModule,
     ConfigModule.forRoot({
+      envFilePath: ['.env', '.env.development'],
       load: [configurationFactory],
       isGlobal: true,
+      expandVariables: true,
     }),
   ],
 })

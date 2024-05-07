@@ -1,12 +1,15 @@
 import { INestApplication } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AUTH_COOKIE_NAME } from 'src/shared/constants';
+import { EnvironmentVariables } from 'src/shared/models/environment-variables.model';
 import { SWAGGER_TAGS_DEF } from './swagger-tags';
 
-const DEFAULT_PREFIX = process.env.DEFAULT_PREFIX;
-const SWAGGER_URL = process.env.SWAGGER_API_URL;
-
 export class SwaggerDocumentBuilder {
+  private readonly configService = this.app.get(
+    ConfigService<EnvironmentVariables>,
+  );
+
   constructor(private readonly app: INestApplication) {}
 
   private buildConfig() {
@@ -32,7 +35,7 @@ export class SwaggerDocumentBuilder {
     const config = this.buildConfig();
     const document = SwaggerModule.createDocument(this.app, config);
     SwaggerModule.setup(
-      `${DEFAULT_PREFIX}/${SWAGGER_URL}`,
+      this.configService.get('swaggerApiUrl'),
       this.app,
       document,
       {
