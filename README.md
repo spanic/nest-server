@@ -6,7 +6,7 @@
 
 ## Swagger UI
 
-**See [fermosa.ddns.net/server/api](http://fermosa.ddns.net/server/api)** ⚡️
+**See [server.eviterno.online/api](https://server.eviterno.online/api)** ⚡️
 
 ## Description
 
