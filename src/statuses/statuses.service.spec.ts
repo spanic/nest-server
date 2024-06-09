@@ -1,3 +1,4 @@
+import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { RxDBService } from 'src/database/rxdb.service';
 import { StatusesService } from './statuses.service';
@@ -7,7 +8,7 @@ describe('StatusesService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [StatusesService, RxDBService],
+      providers: [StatusesService, RxDBService, ConfigService],
     }).compile();
 
     service = module.get<StatusesService>(StatusesService);

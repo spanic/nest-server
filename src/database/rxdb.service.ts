@@ -3,9 +3,11 @@ import {
   OnApplicationBootstrap,
   OnApplicationShutdown,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { RxCollection, RxDatabase, addRxPlugin, createRxDatabase } from 'rxdb';
-import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
 import { getRxStorageMemory } from 'rxdb/plugins/storage-memory';
+import { EnvironmentVariables } from 'src/shared/models/environment-variables.model';
+import { NodeEnvironment } from 'src/shared/models/node-environment.enum';
 import { v4 as uuidv4 } from 'uuid';
 import { devicesData } from '../data/devices-data';
 import {
@@ -26,8 +28,17 @@ export class RxDBService
 
   devicesCollection: RxCollection<DeviceData>;
 
+  constructor(
+    private readonly configService: ConfigService<EnvironmentVariables>,
+  ) {}
+
   async onApplicationBootstrap() {
-    addRxPlugin(RxDBDevModePlugin);
+    const nodeEnv = this.configService.get('env', { infer: true });
+    if (nodeEnv !== NodeEnvironment.Production) {
+      await import('rxdb/plugins/dev-mode').then(({ RxDBDevModePlugin }) =>
+        addRxPlugin(RxDBDevModePlugin),
+      );
+    }
 
     this.devicesDb = await createRxDatabase({
       name: RxDBService.DEVICES_DB_NAME,

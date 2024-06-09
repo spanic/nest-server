@@ -1,3 +1,4 @@
+import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { RxDBService } from 'src/database/rxdb.service';
 import { DevicesDataController } from './devices-data.controller';
@@ -9,7 +10,7 @@ describe('DevicesDataController', () => {
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [DevicesDataController],
-      providers: [DevicesDataService, RxDBService],
+      providers: [DevicesDataService, RxDBService, ConfigService],
     }).compile();
 
     devicesDataController = app.get<DevicesDataController>(
