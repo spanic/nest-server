@@ -14,6 +14,6 @@ export class AuthService {
 
   login(userId: string): string {
     if (userId !== this.DEFAULT_USER_ID) throw new UnauthorizedException();
-    return this.jwtService.sign({ sub: userId });
+    return this.jwtService.sign({ sub: 'default user' });
   }
 }
