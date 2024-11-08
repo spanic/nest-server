@@ -1,5 +1,6 @@
 export enum SWAGGER_TAGS {
   Devices = 'Devices & statuses',
+  Shopping = 'eCommerce & Shopping',
   Auth = 'Authentication',
 }
 
@@ -8,6 +9,10 @@ export const SWAGGER_TAGS_DEF: {
 } = {
   Devices: {
     name: SWAGGER_TAGS.Devices,
+    description: 'Requires authorization ⚠️',
+  },
+  Shopping: {
+    name: SWAGGER_TAGS.Shopping,
     description: 'Requires authorization ⚠️',
   },
   Auth: {

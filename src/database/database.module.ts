@@ -1,9 +1,11 @@
 import { Global, Module } from '@nestjs/common';
-import { RxDBService } from './rxdb.service';
+import { RxDbService } from './rx-db.service';
+import { ShoppingDbProvider } from './shopping/shopping-db.provider';
+import { DevicesDbProvider } from './devices/devices-db.provider';
 
 @Global()
 @Module({
-  providers: [RxDBService],
-  exports: [RxDBService],
+  providers: [RxDbService, ShoppingDbProvider, DevicesDbProvider],
+  exports: [RxDbService],
 })
 export class DatabaseModule {}

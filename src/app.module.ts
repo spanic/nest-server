@@ -5,11 +5,13 @@ import configurationFactory from './configuration';
 import { DatabaseModule } from './database/database.module';
 import { DevicesModule } from './devices/devices.module';
 import { StatusesModule } from './statuses/statuses.module';
+import { ShoppingModule } from './shopping/shopping.module';
 
 @Module({
   imports: [
     StatusesModule,
     DevicesModule,
+    ShoppingModule,
     DatabaseModule,
     AuthModule,
     ConfigModule.forRoot({
