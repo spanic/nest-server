@@ -13,7 +13,6 @@ export const SWAGGER_TAGS_DEF: {
   },
   Shopping: {
     name: SWAGGER_TAGS.Shopping,
-    description: 'Requires authorization ⚠️',
   },
   Auth: {
     name: SWAGGER_TAGS.Auth,

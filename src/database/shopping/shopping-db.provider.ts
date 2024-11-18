@@ -14,6 +14,29 @@ export class ShoppingDbProvider
 {
   private static readonly SHOPPING_DB_NAME = 'shopping_db';
   private static readonly OFFERS_COLLECTION_NAME = 'offers_collection';
+  private static readonly OFFERS_COLLECTION_SCHEMA = {
+    version: 0,
+    primaryKey: 'id',
+    type: 'object',
+    properties: {
+      id: {
+        type: 'string',
+        maxLength: 100,
+        format: 'uuid',
+      },
+      name: {
+        type: 'string',
+      },
+      description: {
+        type: 'string',
+      },
+      price: {
+        type: 'number',
+        multipleOf: 0.01,
+      },
+    },
+    required: ['id', 'name', 'price'],
+  };
 
   shoppingDb: RxDatabase<{
     [ShoppingDbProvider.SHOPPING_DB_NAME]: ShoppingDbProvider['offersCollection'];
@@ -27,43 +50,25 @@ export class ShoppingDbProvider
       storage: getRxStorageMemory(),
     });
 
-    const schema = {
-      version: 0,
-      primaryKey: 'id',
-      type: 'object',
-      properties: {
-        id: {
-          type: 'string',
-          maxLength: 100,
-          format: 'uuid',
-        },
-        name: {
-          type: 'string',
-        },
-        description: {
-          type: 'string',
-        },
-        price: {
-          type: 'number',
-          multipleOf: 0.01,
-        },
-      },
-      required: ['id', 'name', 'price'],
-    };
-
     await this.shoppingDb.addCollections({
       [ShoppingDbProvider.OFFERS_COLLECTION_NAME]: {
-        schema,
+        schema: ShoppingDbProvider.OFFERS_COLLECTION_SCHEMA,
       },
     });
 
     this.offersCollection =
       this.shoppingDb[ShoppingDbProvider.OFFERS_COLLECTION_NAME];
 
-    await this.offersCollection.bulkInsert(this.generateInitialData());
+    await this.offersCollection.bulkInsert(
+      ShoppingDbProvider.generateInitialData(),
+    );
   }
 
-  private generateInitialData() {
+  onApplicationShutdown() {
+    this.shoppingDb.destroy();
+  }
+
+  private static generateInitialData() {
     return faker.helpers.multiple(
       (): OfferData => {
         return {
@@ -75,9 +80,5 @@ export class ShoppingDbProvider
       },
       { count: { min: 5, max: 10 } },
     );
-  }
-
-  onApplicationShutdown() {
-    this.shoppingDb.destroy();
   }
 }

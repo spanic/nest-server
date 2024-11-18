@@ -7,6 +7,9 @@ export class DevicesDataService {
   constructor(private rxDbService: RxDbService) {}
 
   async getDevicesData(): Promise<DeviceData[]> {
-    return await this.rxDbService.devicesDb.devicesCollection.find().exec();
+    return await this.rxDbService.devicesDb.devicesCollection
+      .find()
+      .exec()
+      .then((results) => results.map((document) => document.toJSON()));
   }
 }

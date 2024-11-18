@@ -14,6 +14,55 @@ export class DevicesDbProvider
 {
   private static readonly DEVICES_DB_NAME = 'devices_db';
   private static readonly DEVICES_COLLECTION_NAME = 'devices_collection';
+  private static readonly DEVICES_COLLECTION_SCHEMA = {
+    version: 0,
+    primaryKey: 'id',
+    type: 'object',
+    properties: {
+      id: {
+        type: 'string',
+        maxLength: 100,
+        format: 'uuid',
+      },
+      name: {
+        type: 'string',
+      },
+      manufacturer: {
+        type: 'string',
+      },
+      model: {
+        type: 'string',
+      },
+      uptime: {
+        type: 'integer',
+        minimum: 0,
+      },
+      firmwareVersion: {
+        type: 'string',
+      },
+      macAddress: {
+        type: 'string',
+      },
+      ipAddress: {
+        type: 'string',
+        format: 'ipv4',
+      },
+      location: {
+        type: 'string',
+      },
+      status: {
+        type: 'string',
+        enum: [
+          Status.Offline,
+          Status.Operational,
+          Status.Warning,
+          Status.Error,
+          Status.Unknown,
+        ],
+      },
+    },
+    required: ['id', 'name'],
+  };
 
   devicesDb: RxDatabase<{
     [DevicesDbProvider.DEVICES_COLLECTION_NAME]: DevicesDbProvider['devicesCollection'];
@@ -27,69 +76,25 @@ export class DevicesDbProvider
       storage: getRxStorageMemory(),
     });
 
-    const schema = {
-      version: 0,
-      primaryKey: 'id',
-      type: 'object',
-      properties: {
-        id: {
-          type: 'string',
-          maxLength: 100,
-          format: 'uuid',
-        },
-        name: {
-          type: 'string',
-        },
-        manufacturer: {
-          type: 'string',
-        },
-        model: {
-          type: 'string',
-        },
-        uptime: {
-          type: 'integer',
-          minimum: 0,
-        },
-        firmwareVersion: {
-          type: 'string',
-        },
-        macAddress: {
-          type: 'string',
-        },
-        ipAddress: {
-          type: 'string',
-          format: 'ipv4',
-        },
-        location: {
-          type: 'string',
-        },
-        status: {
-          type: 'string',
-          enum: [
-            Status.Offline,
-            Status.Operational,
-            Status.Warning,
-            Status.Error,
-            Status.Unknown,
-          ],
-        },
-      },
-      required: ['id', 'name'],
-    };
-
     await this.devicesDb.addCollections({
       devices_collection: {
-        schema,
+        schema: DevicesDbProvider.DEVICES_COLLECTION_SCHEMA,
       },
     });
 
     this.devicesCollection =
       this.devicesDb[DevicesDbProvider.DEVICES_COLLECTION_NAME];
 
-    await this.devicesCollection.bulkInsert(this.generateInitialData());
+    await this.devicesCollection.bulkInsert(
+      DevicesDbProvider.generateInitialData(),
+    );
   }
 
-  private generateInitialData() {
+  async onApplicationShutdown() {
+    await this.devicesDb.destroy();
+  }
+
+  private static generateInitialData() {
     const availableDeviceTypes = [
       'router',
       'switch',
@@ -130,9 +135,5 @@ export class DevicesDbProvider
       },
       { count: { min: 10, max: 20 } },
     );
-  }
-
-  async onApplicationShutdown() {
-    await this.devicesDb.destroy();
   }
 }

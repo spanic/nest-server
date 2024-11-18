@@ -7,6 +7,10 @@ export class ShoppingService {
   constructor(private rxDbService: RxDbService) {}
 
   async getOffers(): Promise<OfferData[]> {
-    return await this.rxDbService.shoppingDb.offersCollection.find().exec();
+    return await this.rxDbService.shoppingDb.offersCollection
+      .find()
+      .exec()
+      .then((results) => results.map((document) => document.toJSON()));
   }
 }
+``;
