@@ -1,16 +1,16 @@
-import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { RxDBService } from 'src/database/rxdb.service';
 import { DevicesDataController } from './devices-data.controller';
 import { DevicesDataService } from './devices-data.service';
+import { DatabaseModule } from 'src/database/database.module';
 
 describe('DevicesDataController', () => {
   let devicesDataController: DevicesDataController;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
+      imports: [DatabaseModule],
       controllers: [DevicesDataController],
-      providers: [DevicesDataService, RxDBService, ConfigService],
+      providers: [DevicesDataService],
     }).compile();
 
     devicesDataController = app.get<DevicesDataController>(

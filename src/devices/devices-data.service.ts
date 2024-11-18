@@ -1,12 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { DeviceData } from 'src/shared/models/device-data.model';
-import { RxDBService } from 'src/database/rxdb.service';
+import { RxDbService } from 'src/database/rx-db.service';
 
 @Injectable()
 export class DevicesDataService {
-  constructor(private rxDbService: RxDBService) {}
+  constructor(private rxDbService: RxDbService) {}
 
   async getDevicesData(): Promise<DeviceData[]> {
-    return await this.rxDbService.devicesCollection.find().exec();
+    return await this.rxDbService.devicesDb.devicesCollection
+      .find()
+      .exec()
+      .then((results) => results.map((document) => document.toJSON()));
   }
 }
