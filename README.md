@@ -18,6 +18,18 @@
 $ npm install
 ```
 
+### Install using Docker
+
+```
+docker pull public.cr.cloud.ru/nest-server:main
+```
+
+```
+docker run -d -p 4201:4201 public.cr.cloud.ru/nest-server:main
+```
+
+Then open [localhost:4201/api](http://localhost:4201/api) in browser
+
 ## Running the app
 
 ```bash
