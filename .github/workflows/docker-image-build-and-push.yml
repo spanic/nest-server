@@ -46,3 +46,29 @@ jobs:
         with:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    needs: [build]
+
+    steps:
+      - name: Deploy to Cloud.ru VM via SSH
+        if: github.event_name != 'pull_request'
+        uses: appleboy/ssh-action@v0.1.8
+        env:
+          CONTAINER_REGISTRY_NAME: ${{ vars.REGISTRY_NAME }}
+          SERVICE_NAME: ${{ vars.REPOSITORY_NAME }}
+          DOCKER_NETWORK_NAME: ${{ vars.DOCKER_NETWORK_NAME }}
+          DEFAULT_USER_ID: ${{ secrets.DEFAULT_USER_ID }}
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ vars.SSH_PORT }}
+          envs: CONTAINER_REGISTRY_NAME,SERVICE_NAME,DOCKER_NETWORK_NAME,DEFAULT_USER_ID
+          script: |
+            echo "Trying to deploy $SERVICE_NAME"
+            sudo docker rm -f -v $SERVICE_NAME
+            sudo docker rmi $CONTAINER_REGISTRY_NAME/$SERVICE_NAME:main
+            sudo docker run -d --name $SERVICE_NAME -p 4201:4201 --env DEFAULT_USER_ID=$DEFAULT_USER_ID --network=$DOCKER_NETWORK_NAME --pull=always $CONTAINER_REGISTRY_NAME/$SERVICE_NAME:main
