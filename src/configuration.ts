@@ -1,6 +1,7 @@
-import { ConfigFactory } from '@nestjs/config';
+import { ConfigFactory, ConfigModule } from '@nestjs/config';
 import { EnvironmentVariables } from './shared/models/environment-variables.model';
 import { NodeEnvironment } from './shared/models/node-environment.enum';
+import { DynamicModule } from '@nestjs/common';
 
 const configurationFactory: ConfigFactory<EnvironmentVariables> = () => ({
   env: process.env.NODE_ENV as NodeEnvironment,
@@ -12,4 +13,11 @@ const configurationFactory: ConfigFactory<EnvironmentVariables> = () => ({
   defaultUserId: process.env.DEFAULT_USER_ID,
 });
 
-export default configurationFactory;
+const ConfigurationModule: DynamicModule = ConfigModule.forRoot({
+  envFilePath: ['.env', '.env.development'],
+  load: [configurationFactory],
+  isGlobal: true,
+  expandVariables: true,
+});
+
+export { ConfigurationModule };
