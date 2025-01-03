@@ -23,7 +23,6 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-
     needs: [e2e]
 
     steps:
@@ -49,12 +48,11 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-
+    if: github.event_name != 'pull_request'
     needs: [build]
 
     steps:
       - name: Deploy to Cloud.ru VM via SSH
-        if: github.event_name != 'pull_request'
         uses: appleboy/ssh-action@v0.1.8
         env:
           CONTAINER_REGISTRY_NAME: ${{ vars.REGISTRY_NAME }}
