@@ -4,31 +4,25 @@
 
 # Nest.js server
 
-## Swagger UI
+## Public access
 
-**See [server.eviterno.online/api](https://server.eviterno.online/api)** ⚡️
+**[server.eviterno.online/api](https://server.eviterno.online/api)** ⚡️
 
 ## Description
 
 [Nest.js](https://github.com/nestjs/nest) data server, provides some test data for interviews, hobby projects, etc.
+
+## Docker
+
+```bash
+docker run -it --rm -p 4201:4201 --env DEFAULT_USER_ID=local_test_user public.cr.cloud.ru/nest-server:main
+```
 
 ## Installation
 
 ```bash
 $ npm install
 ```
-
-### Install using Docker
-
-```
-docker pull public.cr.cloud.ru/nest-server:main
-```
-
-```
-docker run -d -p 4201:4201 public.cr.cloud.ru/nest-server:main
-```
-
-Then open [localhost:4201/api](http://localhost:4201/api) in browser
 
 ## Running the app
 
@@ -42,6 +36,8 @@ $ npm run start:dev
 # production mode
 $ npm run start:prod
 ```
+
+Then open `/api` to access Swagger UI
 
 ## Test
 

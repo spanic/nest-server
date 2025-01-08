@@ -68,6 +68,8 @@ jobs:
           envs: CONTAINER_REGISTRY_NAME,SERVICE_NAME,DOCKER_NETWORK_NAME,DEFAULT_USER_ID
           script: |
             echo "Trying to deploy $SERVICE_NAME"
-            sudo docker rm -f -v $SERVICE_NAME
+            if [[ $(sudo docker ps -q -f name="$SERVICE_NAME") ]]; then
+              sudo docker rm -f -v $SERVICE_NAME
+            fi
             sudo docker rmi $CONTAINER_REGISTRY_NAME/$SERVICE_NAME:main
-            sudo docker run -d --name $SERVICE_NAME -p 4201:4201 --env DEFAULT_USER_ID=$DEFAULT_USER_ID --network=$DOCKER_NETWORK_NAME --pull=always $CONTAINER_REGISTRY_NAME/$SERVICE_NAME:main
+            sudo docker run -d --name $SERVICE_NAME -p 4201:4201 --env DEFAULT_USER_ID=$DEFAULT_USER_ID --network=$DOCKER_NETWORK_NAME $CONTAINER_REGISTRY_NAME/$SERVICE_NAME:main
